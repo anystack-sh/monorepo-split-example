@@ -1,0 +1,58 @@
+name: 'Split packages'
+
+on:
+    push:
+        branches:
+            - main
+        tags:
+            - '*'
+
+jobs:
+    packages_split:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                package:
+                    - local_path: 'packages/button'
+                      github_account: 'unlock-sh'
+                      github_repository: 'button-component'
+                      deploy_key: 'BUTTON_DEPLOY_KEY'
+                      target_branch: 'main'
+                    - local_path: 'packages/input'
+                      github_account: 'unlock-sh'
+                      github_repository: 'input-component'
+                      deploy_key: 'INPUT_DEPLOY_KEY'
+                      target_branch: 'main'                      
+        steps:
+            -   uses: actions/checkout@v2
+            -   if: "!startsWith(github.ref, 'refs/tags/')"
+                name: "Update package repository"
+                uses: alphpaca/monoplus-split-action@2022.1-alpha3
+                with:
+                    package_path: '${{ matrix.package.local_path }}'
+                    ssh_private_key: ${{ secrets[matrix.package.deploy_key] }}
+                    git_username: 'unlock-sh'
+                    git_email: 'git@unlock.sh'
+                    repository_owner: "${{ matrix.package.github_account }}"
+                    repository_name: "${{ matrix.package.github_repository }}"
+                    target_branch: "${{ matrix.package.target_branch }}"
+
+            -   if: "startsWith(github.ref, 'refs/tags/')"
+                name: Extract tag
+                id: extract_tag
+                run: echo ::set-output name=TAG::${GITHUB_REF/refs\/tags\//}
+
+            -   if: "startsWith(github.ref, 'refs/tags/')"
+                name: "Create package tag"
+                uses: alphpaca/monoplus-split-action@2022.1-alpha3
+
+                with:
+                    package_path: '${{ matrix.package.local_path }}'
+                    ssh_private_key: ${{ secrets[matrix.package.deploy_key] }}
+                    git_username: 'unlock-sh'
+                    git_email: 'git@unlock.sh'
+                    repository_owner: "${{ matrix.package.github_account }}"
+                    repository_name: "${{ matrix.package.github_repository }}"
+                    target_branch: "${{ matrix.package.target_branch }}"
+                    tag: ${{ steps.extract_tag.outputs.TAG }}

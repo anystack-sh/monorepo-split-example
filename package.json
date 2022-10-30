@@ -1,0 +1,13 @@
+{
+  "name": "@acme/root",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "services/*"
+  ],
+  "devDependencies": {
+    "lerna": "^6.0.1"
+  }
+}
