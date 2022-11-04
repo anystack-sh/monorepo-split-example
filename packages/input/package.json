@@ -1,6 +1,6 @@
 {
   "name": "@acme/input",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A very simple input field",
   "dependencies": {
     "react": "^18.2.0"

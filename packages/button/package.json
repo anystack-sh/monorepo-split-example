@@ -1,6 +1,6 @@
 {
   "name": "@acme/button",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A very simple button",
   "dependencies": {
     "react": "^18.2.0"
