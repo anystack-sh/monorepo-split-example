@@ -5,7 +5,7 @@ const Input = () => (
       border: 0,
       padding: "12px 24px",
       margin: "12px",
-      borderRadius: "3px"
+      borderRadius: "4px"
     }}
   />
 );
